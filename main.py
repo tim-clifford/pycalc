@@ -40,7 +40,7 @@ if __name__ == "__main__":
         raise SystemExit
     while True:
         try:
-            inp = input("Enter an expression: ")
+            inp = input("> ")
             if True:#chk.check(inp):
                 out = calc.parse_brackets(inp)
                 if out: print(out)
