@@ -12,7 +12,11 @@ def run_tests():
     assert not calc.parse_brackets("[1x2+{3^4]}")
     assert chk.check("4")
     assert chk.check("1.2")
-    assert calc.evaluate(cnst.replace_constants("tau")) == str(2*math.pi)
-    assert calc.parse_brackets(cnst.replace_constants("e^(e^tau)")) == str(math.e**(math.e**(2*math.pi)))
-
+    assert float(calc.evaluate(cnst.replace_constants("tau"))) == 2*math.pi
+    assert float(calc.parse_brackets(cnst.replace_constants("e^(e^tau)"))) == math.e**(math.e**(2*math.pi))
+    assert float(calc.parse_brackets("(1-3)+4")) == 2
+    assert float(calc.evaluate("cos2")) == math.cos(2)
+    assert float(calc.evaluate("cos1 + 2")) == math.cos(1) + 2
+    assert float(calc.parse_brackets("cos (tau / 4)"))
+    assert float(calc.evaluate("asin 1"))
 if __name__ == "__main__": run_tests()
