@@ -3,7 +3,7 @@ CLI calculator written in python
 
 Currently supports:  
 - `^*x/+-` as infix operators
-- `sin`,`cos`,`tan` as prefix operators
+- `sin`,`cos`,`tan`,`asin`,`arcsin`,`sin-1`,`acos`,`arccos`,`cos-1`,`atan`,`arctan`,`tan-1`, as prefix operators
 - `([{}])`
 - `e`, `tau`
 
