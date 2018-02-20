@@ -1,5 +1,4 @@
 import chk,calc,test,cnst,trig
-import math
 #NOTE: infix operator control characters must be one character
 OPERATORS = [
     [
@@ -11,7 +10,6 @@ OPERATORS = [
         [['+'],lambda a,b: a+b],
         [['-'],lambda a,b: a-b],
     ],[
-        
         # Prefix. Second highest priority behind postfix. 
         # Using series expansions for trig
 
@@ -21,10 +19,9 @@ OPERATORS = [
         [['atan','arctan'],trig.arctan],
         [['sin'],trig.sin],
         [['cos'],trig.cos],
-        [['tan'],trig.tan],
+        [['tan'],trig.tan], 
         
     ],[
-
         # Postfix. Highest priority
         [['!'],trig.fact]
     ],[
