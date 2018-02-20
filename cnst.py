@@ -1,7 +1,7 @@
 import math
 CONSTANTS = [
-    ['tau',2*math.pi],
-    ['e',math.e],
+    ['tau', 6.28318530717958623200, 'τ'],
+    ['e',   2.71828182845904509080, 'e'],
 ]
 
 def replace_constants(string):

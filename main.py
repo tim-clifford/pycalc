@@ -1,27 +1,36 @@
-import chk,calc,test,cnst
+import chk,calc,test,cnst,trig
 import math
 #NOTE: infix operator control characters must be one character
 OPERATORS = [
     [
         # Infix
         [['^'],lambda a,b: a**b],
+        [['C'],trig.comb],
         [['x','*'],lambda a,b: a*b],
         [['/'],lambda a,b: a/b],
         [['+'],lambda a,b: a+b],
         [['-'],lambda a,b: a-b],
     ],[
         
-        # Prefix. Parentheses recommended as given highest priority. 
-        # Using math functions temporarily.
+        # Prefix. Second highest priority behind postfix. 
+        # Using series expansions for trig
 
-        # Radians only. You can use fractions of tau. There is no support for the inferior circle constant
-        [['asin','sin-1','arcsin'],lambda a: math.asin(a)],
-        [['acos','cos-1','arccos'],lambda a: math.acos(a)],
-        [['atan','tan-1','arctan'],lambda a: math.atan(a)],
-        [['sin'],lambda a: math.sin(a)],
-        [['cos'],lambda a: math.cos(a)],
-        [['tan'],lambda a: math.tan(a)],
+        # Radians only for trig. You can use fractions of tau. Using the inferior circle constant will exit the calculator
+        [['asin','arcsin'],trig.arcsin],
+        [['acos','arccos'],trig.arccos],
+        [['atan','arctan'],trig.arctan],
+        [['sin'],trig.sin],
+        [['cos'],trig.cos],
+        [['tan'],trig.tan],
         
+    ],[
+
+        # Postfix. Highest priority
+        [['!'],trig.fact]
+    ],[
+        # Bracketed multi parameter functions. Not implemented. Format name, number of operands, function
+        [['log'],2,""],
+        [['']]
     ]
 ]
 BRACKETS = [
@@ -30,7 +39,10 @@ BRACKETS = [
     ['(',')'],
 ]
 brk = "".join("".join(a) for a in BRACKETS)
-ops = "".join("".join(a[0]) for a in OPERATORS[0]) 
+ops = "".join("".join(a[0]) for a in OPERATORS[0])
+pfx = sum([a[0] for a in OPERATORS[1]],[])
+ptx = sum([a[0] for a in OPERATORS[2]],[])
+
 
 if __name__ == "__main__":
     try:
@@ -41,12 +53,12 @@ if __name__ == "__main__":
     while True:
         try:
             inp = input("> ")
-            if True:#chk.check(inp):
-                out = calc.parse_brackets(inp)
-                if out: print(out)
-                else: print("Math Error")
-            else: print("Syntax Error")
-        except KeyboardInterrupt:
+            chk.make_sure_they_understand_which_circle_constant_is_correct(inp)
+            if inp in ["q","q()","exit","exit()","quit","quit()"]: raise SystemExit
+            out = calc.parse_brackets(inp)
+            if out[1] != "": print(out[1])
+
+        except (KeyboardInterrupt, EOFError):
             print()
             raise SystemExit
 

@@ -1,27 +1,51 @@
-import main, cnst
+import main, cnst, chk
 def parse_brackets(string):
     op = [a[0] for a in main.BRACKETS]
     cl = [a[1] for a in main.BRACKETS]
     for i in main.brk:
         if i in string: break
     else: 
-        try: return evaluate(string)
+        try: return True,evaluate(string)
+        except ValueError:
+            return False,"Syntax Error"
         except: 
-            return False
+            return False,"Calculation Error"
     j,l = 0,""
     for i,c in enumerate(string):
         if c in "".join(op):
             j,l = i,c
         elif c in "".join(cl):
-            if l == "": return False
+            if l == "": return False,"Bracket Error (closed before opened)"
             elif c != cl[op.index(l)]: 
-                return False
-            return parse_brackets(string[:j] + parse_brackets(string[j+1:i]) + string[i+1:])
-
+                return False,"Bracket Error (mismatched)"
+            try:
+                return True,parse_brackets(string[:j] + parse_brackets(string[j+1:i])[1] + string[i+1:])[1]
+            except TypeError:
+                return False,"Bracket Error (other)"
+    return False,"Bracket Error (not closed)"
 def evaluate(string):
+    if not chk.check(string): raise ValueError
     string = cnst.replace_constants(string)
-    acc = string
-    # Prefix first
+    acc = string.replace(" ","")
+    # Postfix first
+    for typ in main.OPERATORS[2]:
+        for op in typ[0]:
+            acc = acc.split(op)
+            while len(acc) > 1:
+                pre = acc[0]
+                post = "".join(acc[1:])
+                p,j = [""],0
+                for i in pre:
+                    if i in main.ops:
+                        p.append(i); p.append(""); j += 2
+                    else: p[j] += i
+                pre = p
+                while pre[-1] == '' and len(pre) > 1: pre = list(pre[:-1])
+                acc = str("{:.20f}".format(typ[1](float(pre[-1])))) + post
+                if len(pre) > 1: acc = "".join(pre[:-1]) + acc
+                acc = acc.split(op)
+            acc = acc[0]
+    # then prefix
     for typ in main.OPERATORS[1]:
         for op in typ[0]:
             acc = acc.split(op)
@@ -34,6 +58,7 @@ def evaluate(string):
                         p.append(i); j += 1
                     else: p[j] += i
                 post = p
+                while post[0] == '' and len(post) > 1: post = list(post[1:])
                 acc = pre + str("{:.20f}".format(typ[1](float(post[0]))))
                 if len(post) > 1: acc += "".join(post[1:])
                 acc = acc.split(op)
