@@ -1,30 +1,38 @@
-import math, cnst
+import math, num
 ACCURACY = 20
 TOLERANCE = 0.002
-TAU = cnst.CONSTANTS[0][1]
+TAU = 6.28318530717958623200 # double defined to avoid circular imports
 def fact(x):
+	if isinstance(x,num.num):
+		x = float(x)
 	if x != int(x): raise ArithmeticError
 	if x < 0: raise ArithmeticError
 	if x == 0: return 1
 	return x * fact(x-1)
+
 def comb(n,r):
 	return fact(n)/(fact(r)*fact(n-r))
 def sin(x):
+	if isinstance(x,num.num): x = x.ToFloat()
 	if x < 0: return -sin(-x)
 	x %= TAU
 	acc = float(0)
 	for i in range(ACCURACY):
-		acc += (-1)**i * (x**(2*i - 1)/fact(2*i+1))
-	return acc
+		acc += (-1)**i * (x**(2*i - 1)/int(fact(2*i+1)))
+	n = num.num(acc)
+	n.exact = False
+	return n
 def cos(x):
+	if isinstance(x,num.num): x = x.ToFloat()
 	if x < 0: return cos(-x)
 	x %= TAU
 	acc = float(0)
 	for i in range(ACCURACY):
-		acc += (-1)**i * (x**(2*i))/fact(2*i)
-	return acc
-def tan(x): 
-	x %= TAU
+		acc += (-1)**i * (x**(2*i))/int(fact(2*i))
+	n = num.num(acc)
+	n.exact = False
+	return n
+def tan(x):
 	if abs(cos(x)) < TOLERANCE: raise ArithmeticError
 	return sin(x)/cos(x)
 def sec(x): 
@@ -37,6 +45,7 @@ def cot(x):
 	if abs(tan(x)) < TOLERANCE: raise ArithmeticError
 	return 1/tan(x)
 def arcsin(x):
+	if isinstance(x,num.num): x = x.ToFloat()	
 	if abs(x) > 1: raise ArithmeticError
 	acc = 0
 	for n in range(ACCURACY):
@@ -45,6 +54,7 @@ def arcsin(x):
 def arccos(x):
 	return TAU/4 - arcsin(x)
 def arctan(x):
+	if isinstance(x,num.num): x = x.ToFloat()
 	acc = 0
 	for n in range(ACCURACY):
 		acc += (-1)**n*(x**(2*n+1)/(2*n+1))
@@ -52,7 +62,12 @@ def arctan(x):
 	if acc < TAU/-2: return acc + TAU
 	return acc
 def abs(x):
-	if x < 0: return -1*x
+	if isinstance(x,num.num):
+		if x.ToFloat() < 0:
+			neg = num.ExactSum.negate(x.a)
+			return num.num(neg,x.b.a,x.b.const)
+		else: return x
+	elif x < 0: return -x
 	else: return x
 def test():
 	assert abs(sin(3.14)-math.sin(3.14)) < TOLERANCE
@@ -66,4 +81,4 @@ def test():
 		arcsin(3)
 		raise AssertionError
 	except ArithmeticError: pass
-if __name__ == "__main__": print(sin(-1))
+if __name__ == "__main__": test()
