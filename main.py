@@ -68,6 +68,7 @@ To kill this message on launch use the option -q or --quiet""")
             elif inp == "mode": exact = not exact
             elif inp == "clr": open("history.txt","w").write("1\n")
             else:
+                if inp == "": inp = "ans"
                 inp = str(chk.history(inp))
                 out = calc.parse_brackets(inp)
                 if out[1] != "": # don't want to print empty lines

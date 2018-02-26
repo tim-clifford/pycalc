@@ -15,8 +15,8 @@ def comb(n,r):
 def sin(x):
 	if isinstance(x,num.num): x = x.ToFloat()
 	if x < 0: return -sin(-x)
-	if x < 1: return sin(TAU/2 - x) # approximation doesn't sem to work here
 	x %= TAU
+	if x < 1: return sin(TAU/2 - x) # approximation doesn't sem to work here
 	acc = float(0)
 	for i in range(ACCURACY):
 		acc += (-1)**i * (x**(2*i - 1)/int(fact(2*i+1)))
