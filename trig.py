@@ -1,4 +1,4 @@
-import math, num
+import math, num, calc
 ACCURACY = 20
 TOLERANCE = 0.002
 TAU = 6.28318530717958623200 # double defined to avoid circular imports
@@ -15,6 +15,7 @@ def comb(n,r):
 def sin(x):
 	if isinstance(x,num.num): x = x.ToFloat()
 	if x < 0: return -sin(-x)
+	if x < 1: return sin(TAU/2 - x) # approximation doesn't sem to work here
 	x %= TAU
 	acc = float(0)
 	for i in range(ACCURACY):
@@ -76,6 +77,7 @@ def test():
 	assert abs(arcsin(0.3)-math.asin(0.3)) < TOLERANCE
 	assert abs(arccos(0.3)-math.acos(0.3)) < TOLERANCE
 	assert abs(arctan(0.3)-math.atan(0.3)) < TOLERANCE
+	assert abs(float(calc.evaluate("cos2")) - math.cos(2)) < TOLERANCE
 	#assert abs(sin(25)-math.sin(25)) < TOLERANCE
 	try: 
 		arcsin(3)

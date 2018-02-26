@@ -8,6 +8,14 @@ def make_sure_they_understand_which_circle_constant_is_correct(string):
         print("π is the inferior circle constant, learn to use τ before coming back.\nGoodbye.")
         raise SystemExit
 
+def history(string):
+    if "ans" in string:
+        s = string.replace("ans","("+open("history.txt").readlines()[-1][:-1]+")")
+    else: s = string
+    if s[0] == "(" and s[-1] == ")": s = s[1:-1]
+    open("history.txt","a").write(s+"\n")
+    return s
+
 def check(string):
     '''
     Called by calc.evaluate, so brackets are handled separately.

@@ -11,7 +11,10 @@ class Exact:
     def ToString(self):
         if self.a == 0: return "0"
         elif self.a == 1 and self.const != [0]*len(cnst.CONSTANTS): acc = ""
-        else: acc = str(self.a)
+        else: 
+            if self.a == int(self.a):
+                acc = str(int(self.a))
+            else: acc = str(self.a)
         for i,j in enumerate(self.const):
             if j == 0: continue
             elif j == 1: acc += cnst.CONSTANTS[i][2]
@@ -70,7 +73,7 @@ class num:
             else: raise ValueError
         else: 
             raise TypeError
-        self.b = Exact(denominator,constB)
+        if not isinstance(numerator,num): self.b = Exact(denominator,constB)
     def simplify(self):
         if not self.exact: return False 
         # simplify the top sum
@@ -88,13 +91,12 @@ class num:
                     i-=1
                 j += 1
         # find and remove common factors
-        common = [0]*len(cnst.CONSTANTS)
+        common = []
         for i in range(len(cnst.CONSTANTS)):
             common.append(min(x.const[i] for x in self.a.list))
             for j in self.a.list: j.const[i] -= min(common[i],self.b.const[i])
             self.b.const[i] -= min(common[i],self.b.const[i])
-        if int(self.a) != float(self.a): return True
-        for i in range(2,abs(min(*(x.a for x in self.a.list),self.b.a))+1):
+        for i in range(2,int(abs(min(*(x.a for x in self.a.list),self.b.a)))+1):
             if all(x.a%i == 0 for x in self.a.list) and self.b.a%i == 0:
                 for x in self.a.list: x.a //= i
                 self.b.a //= i
@@ -129,8 +131,8 @@ class num:
         return numSum
     def __add__(self,other):
         if not isinstance(other,num):
-            return add(self,num(other))
-        else: return add(self,other)
+            return num.add(self,num(other))
+        else: return num.add(self,other)
     def negate(n):
         return num(ExactSum.negate(n.a),n.b.a,n.b.const)
     def __neg__(self):
@@ -155,6 +157,29 @@ class num:
         if not isinstance(other,num):
             return num.mult(self,num(other))
         else: return num.mult(self,other)
+    '''
+    def __imul__(self,other):
+        if not isinstance(other,num):
+            self = num.mult(self,num(other))
+        else: self = num.mult(self,other)
+    '''
+    def power(num1,num2):
+        if float(num2) == int(num2):
+            numPower = num()
+            for i in range(abs(int(num2))):
+                numPower = numPower * num1
+            if num2 < 0: return 1/numPower
+            else: return numPower
+        else:
+            numPower = num(float(num1)**float(num2))
+            numPower.exact == False
+            return numPower
+
+    def __pow__(self,other):
+        if not isinstance(other,num):
+            return num.power(self,num(other))
+        else:
+            return num.power(self,other)
     def div(num1,num2):
         # This is hard because we have to rearrange Exact/ExactSum into ExactSum/Exact
         # For now it will be handled partially numerically
@@ -178,12 +203,17 @@ class num:
     def __rtruediv__(self,other):
         return num.div(num(other),self)
     def __eq__(self,value):
-        return float(self) == float(value)
+        if isinstance(value,float) or isinstance(value,int) or isinstance(value,num):
+            return float(self) == float(value)
+        elif isinstance(value,str):
+            return str(self) == value
+        else:
+            return False
     def __lt__(self,value):
         return float(self) < float(value)
 if __name__ == "__main__":
-    a = num(5,10,[0,2])
-    b = num(1,3,[3,1])
-    c = num.div(a,b)
-    c.simplify()
-    print(c.ToString())
+    a = num(1.0,1.0,[0,0])
+    b = num(3.0,1.0,[0,0])
+    c = a/b
+    print(str(c))
+   #print(c.ToString())
