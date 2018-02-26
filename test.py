@@ -1,4 +1,4 @@
-import chk,calc,cnst,trig,math
+import chk,calc,cnst,trig,math,num
 def run_tests():
     assert chk.check("1+23x1^3/2^1")
     assert not chk.check("+1x2")

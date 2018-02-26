@@ -74,7 +74,7 @@ To kill this message on launch use the option -q or --quiet""")
                 if out[1] != "": # don't want to print empty lines
                     try: 
                         out[1].simplify()
-                        if float(out[1]) < 10**-15: print(0) # below the accuracy and is annoying
+                        if abs(float(out[1])) < 10**-15: print(0) # below the accuracy and is annoying
                         elif exact: print(out[1])
                         else: print(float(out[1]))
                     except (ValueError, AttributeError): print(out[1]) # errors
