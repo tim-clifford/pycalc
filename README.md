@@ -1,3 +1,9 @@
+
+
+| :exclamation:  | This is a mirror of [https://git.sr.ht/~tim-clifford/pycalc](https://git.sr.ht/~tim-clifford/pycalc). Please refrain from using GitHub's issue and PR system.  |
+|----------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+
 # pycalc
 CLI calculator written in python
 
